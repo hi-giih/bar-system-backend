@@ -4,14 +4,16 @@
 Projeto ainda está em construção !!
 
 O Sistema de Comandas é uma aplicação backend desenvolvida em Python, com foco em facilitar o controle de consumo em estabelecimentos como bares, restaurantes, salões de beleza e eventos. O sistema permite o cadastro de itens, a criação de comandas individuais, o registro de produtos consumidos, e o gerenciamento de pagamentos, fornecendo uma visão clara e atualizada do valor total de cada comanda.
+Oferecer uma solução simples, rápida e eficaz para o controle de consumo individual, ideal para pequenos negócios que desejam organizar melhor seus atendimentos e evitar perdas financeiras.
+
 
 ## ⚙️ Funcionalidades
 
 - ✅ **Cadastro de Clientes:** Cadastro de clientes por nome.
-- 🔐 **Cadastro de produtos:** Cadastro de produtos com o nome e o valor.
-- 🚪 **Comandas por cliente:** Comanda criada por clientes constando o que foi consumido e o valor pago pelo cliente.
+- 🛒 **Cadastro de produtos:** Cadastro de produtos com o nome e o valor.
+- 🧾 **Comandas por cliente:** Comanda criada por clientes constando o que foi consumido e o valor pago pelo cliente.
 - ✏️ **Cálculo do total da comanda.:** Cálculo total de cada comanda.
-- ❌ **Pagamento parcial ou total :** Pagamento fazendo o controle do valor da comanda.
+- 📟 **Pagamento parcial ou total :** Pagamento fazendo o controle do valor da comanda.
 
 
 ## 💻 Tecnologias Utilizadas
@@ -19,7 +21,16 @@ O Sistema de Comandas é uma aplicação backend desenvolvida em Python, com foc
 - **Python 3.11**
 - **Flask 2.3.0**
 - **Flask-SQLAlchemy**
-Em desenvolvimento
+- **MySQL (via pymysql connector)**
+
+## 🆗 Roadmap
+- [x] Criar README
+- [x] Criar estrutura de arquivos
+- [ ] Modelar entidades: Cliente, Produto, Comanda
+- [ ] Implementar CRUD de comandas
+- [ ] Integração com banco de dados
+- [ ] Interface simples via terminal
+
 
 ## 🚀 Instalando e Rodando o Projeto
 
