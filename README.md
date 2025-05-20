@@ -26,8 +26,8 @@ Oferecer uma solução simples, rápida e eficaz para o controle de consumo indi
 ## 🆗 Roadmap
 - [x] Criar README
 - [x] Criar estrutura de arquivos
-- [ ] Modelar entidades: Cliente, Produto, Comanda
-- [ ] Implementar CRUD de comandas
+- [x] Modelar entidades: Cliente, Produto, Comanda
+- [x] Implementar CRUD de comandas
 - [ ] Integração com banco de dados
 - [ ] Interface simples via terminal
 
