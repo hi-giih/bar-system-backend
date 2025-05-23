@@ -1,5 +1,5 @@
-from app import db
-from models.produto import Produto
+from app.banco.database import db
+from app.models.produto import Produto
 
 comanda_produto = db.Table('comanda_produto',
     db.Column('comanda_id', db.Integer, db.ForeignKey('comanda.id'), primary_key=True),

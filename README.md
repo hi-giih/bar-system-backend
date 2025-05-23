@@ -5,6 +5,7 @@ Projeto ainda está em construção !!
 
 O Sistema de Comandas é uma aplicação backend desenvolvida em Python, com foco em facilitar o controle de consumo em estabelecimentos como bares, restaurantes, salões de beleza e eventos. O sistema permite o cadastro de itens, a criação de comandas individuais, o registro de produtos consumidos, e o gerenciamento de pagamentos, fornecendo uma visão clara e atualizada do valor total de cada comanda.
 Oferecer uma solução simples, rápida e eficaz para o controle de consumo individual, ideal para pequenos negócios que desejam organizar melhor seus atendimentos e evitar perdas financeiras.
+Para o código utilizamos uma estrutura escavel utilizando Blueprints.
 
 
 ## ⚙️ Funcionalidades
@@ -28,7 +29,8 @@ Oferecer uma solução simples, rápida e eficaz para o controle de consumo indi
 - [x] Criar estrutura de arquivos
 - [x] Modelar entidades: Cliente, Produto, Comanda
 - [x] Implementar CRUD de comandas
-- [ ] Integração com banco de dados
+- [x] Integração com banco de dados
+- [ ] Criação das rotas
 - [ ] Interface simples via terminal
 
 

@@ -1,7 +1,7 @@
-from app import db
+from app.banco.database import db
 
 class Cliente (db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     nome = db.Column(db.String(80), nullable=False)
     telefone = db.Column(db.String(11))
     
@@ -18,5 +18,3 @@ class Cliente (db.Model):
 
     def adicionar_comanda(self, comanda):
         self.comandas.append(comanda)
-
-        
