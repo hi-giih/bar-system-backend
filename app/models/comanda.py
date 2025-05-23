@@ -1,10 +1,20 @@
+from app import db
 from models.produto import Produto
 
-class Comanda():
-    def __init__(self, id, data) -> None:
-        self.id = id
-        self.data = data
-        self.produtos = []
+comanda_produto = db.Table('comanda_produto',
+    db.Column('comanda_id', db.Integer, db.ForeignKey('comanda.id'), primary_key=True),
+    db.Column('produto_id', db.Integer, db.ForeignKey('produto.id'), primary_key=True)
+)
+
+
+
+class Comanda(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    data = db.Column(db.String(10))
+    cliente_id = db.Column(db.Integer, db.ForeignKey('cliente.id'))
+    cliente = db.relationship("Cliente", back_populates="comandas")
+
+    produtos = db.relationship("Produto", secondary='comanda_produto', backref='comandas')
 
     def to_dict(self):
         return{

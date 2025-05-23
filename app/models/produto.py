@@ -1,9 +1,10 @@
-class Produto():
-    def __init__(self, id, nome, preco) -> None:
-        self.id = id
-        self.nome = nome
-        self.preco = preco
-    
+from app import db
+
+class Produto(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    nome = db.Column(db.String(80), nullable=False)
+    preco = db.Column(db.Float, nullable=False)
+
     def to_dict(self):
         return{
             "id": self.id,
