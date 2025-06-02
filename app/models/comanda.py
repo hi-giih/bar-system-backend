@@ -1,12 +1,6 @@
 from app.banco.database import db
 from app.models.produto import Produto
-
-comanda_produto = db.Table('comanda_produto',
-    db.Column('comanda_id', db.Integer, db.ForeignKey('comanda.id'), primary_key=True),
-    db.Column('produto_id', db.Integer, db.ForeignKey('produto.id'), primary_key=True)
-)
-
-
+from app.models.comanda_produto import ComandaProduto
 
 class Comanda(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -14,21 +8,31 @@ class Comanda(db.Model):
     cliente_id = db.Column(db.Integer, db.ForeignKey('cliente.id'))
     cliente = db.relationship("Cliente", back_populates="comandas")
 
-    produtos = db.relationship("Produto", secondary='comanda_produto', backref='comandas')
+    comanda_produtos = db.relationship('ComandaProduto', back_populates='comanda', cascade="all, delete-orphan")
+
 
     def to_dict(self):
         return{
             "id": self.id,
             "data": self.data,
-            "produtos": [produto.to_dict() for produto in self.produtos]
+            "cliente_id": self.cliente_id,
+            "produtos": [cp.to_dict() for cp in self.comanda_produtos],
+            "total": self.calcula_total()
         }
     
-    def adicionar_produtos(self, produto: Produto):
-        self.produtos.append(produto)
+    def adicionar_produtos(self, produto: Produto, quantidade: int):
+        if quantidade <=0:
+            raise ValueError("A quantidade deve ser maior que zero.")
+        
+        for cp in self.comanda_produtos:
+            if cp.produto_id == produto.id:
+                cp.quantidade += quantidade
+                return
+            
+        #senão existir 
+        novo_cp = ComandaProduto(produto=produto, quantidade=quantidade)
+        self.comanda_produtos.append(novo_cp)
 
 
     def calcula_total(self):
-        total = 0
-        for produto in self.produtos:
-            total = total + produto.preco
-        return total
+        return sum(cp.produto.preco * cp.quantidade for cp in self.comanda_produtos)

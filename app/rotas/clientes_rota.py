@@ -14,7 +14,12 @@ def create_cliente():
                            )
     db.session.add(novo_cliente)
     db.session.commit()
-    return jsonify({"message":"Cliente cadastrado com sucesso"})
+    return jsonify({"message":"Cliente cadastrado com sucesso",
+                    "cliente":{
+                        "id": novo_cliente.id,
+                        "nome": novo_cliente.nome,
+                        "telefone": novo_cliente.telefone 
+                    }})
 
 #Listando todos clientes
 @cliente_rt.route('/', methods=['GET'])
@@ -73,3 +78,15 @@ def update_cliente(id):
             "telefone": cliente.telefone
         }
     })
+
+#Deletar clientes
+@cliente_rt.route('/<int:id>', methods=['DELETE'])
+def delete_cliente(id):
+    cliente = Cliente.query.get(id)
+
+    if not cliente:
+        return jsonify({"message":"Cliente não encontrado"}), 404
+
+    db.session.delete(cliente)
+    db.session.commit()
+    return jsonify({"message":"Cliente deletado com sucesso"})
