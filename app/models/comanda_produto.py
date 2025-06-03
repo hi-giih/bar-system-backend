@@ -1,6 +1,5 @@
 from app.banco.database import db
 from app.models.produto import Produto
-from app.models.comanda import Comanda
 
 class ComandaProduto(db.Model):
     __tablename__ = 'comanda_produto' 
@@ -14,6 +13,7 @@ class ComandaProduto(db.Model):
     produto = db.relationship('Produto')
 
     def to_dict(self):
+        print(f"Produto: {self.produto}")
         return {
             "produto_id": self.produto.id,
             "nome": self.produto.nome,

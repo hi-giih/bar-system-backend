@@ -30,7 +30,7 @@ Para o código utilizamos uma estrutura escavel utilizando Blueprints.
 - [x] Modelar entidades: Cliente, Produto, Comanda
 - [x] Implementar CRUD de comandas
 - [x] Integração com banco de dados
-- [ ] Criação das rotas
+- [x] Criação das rotas
 - [ ] Interface simples via terminal
 
 

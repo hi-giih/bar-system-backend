@@ -12,6 +12,7 @@ class Comanda(db.Model):
 
 
     def to_dict(self):
+        print(f"comanda_produtos: {self.comanda_produtos}")
         return{
             "id": self.id,
             "data": self.data,
