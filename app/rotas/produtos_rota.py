@@ -16,8 +16,9 @@ def create_produto():
     return jsonify({"message": "Produto cadastrado com sucesso",
                     "produto":{"id": novo_produto.id,
                             "nome":  novo_produto.nome,
-                            "preco": novo_produto.preco
-                    }})
+                            "preco": novo_produto.preco},
+                            "id":novo_produto.id 
+                        })
 
 #Listando todos produtos
 @produto_rt.route('/', methods=['GET'])

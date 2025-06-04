@@ -18,8 +18,9 @@ def create_cliente():
                     "cliente":{
                         "id": novo_cliente.id,
                         "nome": novo_cliente.nome,
-                        "telefone": novo_cliente.telefone 
-                    }})
+                        "telefone": novo_cliente.telefone},
+                        "id":novo_cliente.id
+                        })
 
 #Listando todos clientes
 @cliente_rt.route('/', methods=['GET'])
