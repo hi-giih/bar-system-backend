@@ -61,5 +61,5 @@ def test_delete_cliente():
         response = requests.delete(f"{BASE_URL}/clientes/{cliente_id}")
         assert response.status_code == 200
 
-        response = requests.delete(f"{BASE_URL}/clientes/{cliente_id}")
+        response = requests.get(f"{BASE_URL}/clientes/{cliente_id}")
         assert response.status_code == 404
