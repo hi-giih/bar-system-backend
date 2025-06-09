@@ -1,8 +1,6 @@
 # 📑 Sistema de comandas
 
 ## 📄 Descrição
-Projeto ainda está em construção !!
-
 O Sistema de Comandas é uma aplicação backend desenvolvida em Python, com foco em facilitar o controle de consumo em estabelecimentos como bares, restaurantes, salões de beleza e eventos. O sistema permite o cadastro de itens, a criação de comandas individuais, o registro de produtos consumidos, e o gerenciamento de pagamentos, fornecendo uma visão clara e atualizada do valor total de cada comanda.
 Oferecer uma solução simples, rápida e eficaz para o controle de consumo individual, ideal para pequenos negócios que desejam organizar melhor seus atendimentos e evitar perdas financeiras.
 Para o código utilizamos uma estrutura escavel utilizando Blueprints.
@@ -14,7 +12,7 @@ Para o código utilizamos uma estrutura escavel utilizando Blueprints.
 - 🛒 **Cadastro de produtos:** Cadastro de produtos com o nome e o valor.
 - 🧾 **Comandas por cliente:** Comanda criada por clientes constando o que foi consumido e o valor pago pelo cliente.
 - ✏️ **Cálculo do total da comanda.:** Cálculo total de cada comanda.
-- 📟 **Pagamento parcial ou total :** Pagamento fazendo o controle do valor da comanda.
+- 📟 **Pagamentos via Pix com QR Code :** Pagamento fazendo o controle do valor da comanda, gerando o qr code de pagamento .
 
 
 ## 💻 Tecnologias Utilizadas
@@ -23,6 +21,9 @@ Para o código utilizamos uma estrutura escavel utilizando Blueprints.
 - **Flask 2.3.0**
 - **Flask-SQLAlchemy**
 - **MySQL (via pymysql connector)**
+- **qrcode==7.4.2**
+- **pillow==10.2.0**
+- **pybrcode==1.1**
 
 ## 🆗 Roadmap
 - [x] Criar README
@@ -31,8 +32,7 @@ Para o código utilizamos uma estrutura escavel utilizando Blueprints.
 - [x] Implementar CRUD de comandas
 - [x] Integração com banco de dados
 - [x] Criação das rotas
-- [ ] Interface simples via terminal
-
+- [x] Criação do Qr Code
 
 ## 🚀 Instalando e Rodando o Projeto
 
@@ -67,6 +67,8 @@ python app.py
 
 O servidor estará disponível em: `http://127.0.0.1:5000`
 
+## ⚙ Teste
+Para rodar os testes unitários: pytest
 
-## 📜 Licença
-Este projeto não está sob nenhuma licença específica.
+## 📜 Contribuições
+Projeto criado por Giovanna Santos (@hi-giih).
