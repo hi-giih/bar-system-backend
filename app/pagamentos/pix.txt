@@ -1,0 +1,49 @@
+import uuid
+import qrcode
+from pybrcode.pix import PixCode
+
+    #vida real
+    def __init__(self, chave_pix, nome_recebedor, cidade_recebedor):
+        self.chave_pix = chave_pix
+       self.nome_recebedor = nome_recebedor
+        self.cidade_recebedor = cidade_recebedor
+
+
+
+    #vida real
+    def create_pagamento(self, valor):
+        bank_payment_id = str(uuid.uuid4())
+
+        # Gera o código Pix (EMV padrão Bacen)
+        brcode = PixCode(
+            key=self.chave_pix,
+            name=self.nome_recebedor,
+            city=self.cidade_recebedor,
+            amount=valor
+        ).code()
+
+        # Cria QR Code a partir do código Pix
+        img = qrcode.make(brcode)
+        file_path = f"static/img/qr_code_pagamento_{bank_payment_id}.png"
+        img.save(file_path)
+
+        return {
+            "bank_payment_id": bank_payment_id,
+            "qr_code_path": file_path,
+            "pix_brcode": brcode
+        }
+
+
+
+***** Para usar como exemplo em teste
+pix = Pix(
+    chave_pix="+5511999999999",  # número com DDI (exemplo: +55 para Brasil)
+    nome_recebedor="João da Silva",
+    cidade_recebedor="Florianópolis"
+)
+
+resultado = pix.create_pagamento(valor=50.0)
+
+print(resultado)
+
+*A chave Pix deve ser real se quiser testar com apps de bancos de verdade.

@@ -10,7 +10,7 @@ def test_create_comandas():
 
     new_comanda_dado={
         "data": "2025-05-22",
-        "cliente_id": "2"
+        "cliente_id": "1"
     }
 
     response_comanda = requests.post(f"{BASE_URL}/comanda", json=new_comanda_dado)
