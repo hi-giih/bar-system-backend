@@ -6,17 +6,20 @@ class Comanda(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     data = db.Column(db.String(10))
     cliente_id = db.Column(db.Integer, db.ForeignKey('cliente.id'))
+    fechada = db.Column(db.Boolean, nullable=False, default=False)
+    colapsada = db.Column(db.Boolean, nullable=False, default=False)
     cliente = db.relationship("Cliente", back_populates="comandas")
 
     comanda_produtos = db.relationship('ComandaProduto', back_populates='comanda', cascade="all, delete-orphan")
 
 
     def to_dict(self):
-        print(f"comanda_produtos: {self.comanda_produtos}")
         return{
             "id": self.id,
             "data": self.data,
             "cliente_id": self.cliente_id,
+            "fechada": self.fechada,
+            "colapsada": self.colapsada,
             "produtos": [cp.to_dict() for cp in self.comanda_produtos],
             "total": self.calcula_total()
         }

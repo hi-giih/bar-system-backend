@@ -1,93 +1,34 @@
-from flask import Blueprint, request, jsonify
-from app.banco.database import db
-from app.models.cliente import Cliente
+from flask import Blueprint, jsonify
+from app.schemas.cliente_schema import ClienteSchema
+from app.services import cliente_service
+from app.utils.validation import load_json
 
 cliente_rt = Blueprint('cliente',__name__,url_prefix='/clientes')
+cliente_schema = ClienteSchema()
 
 #Criando cliente
 @cliente_rt.route('/', methods=['POST'])
 def create_cliente():
-    global id_cliente
-    dado = request.get_json()
-    novo_cliente = Cliente( nome=dado['nome'],
-                           telefone=dado['telefone'],
-                           )
-    db.session.add(novo_cliente)
-    db.session.commit()
-    return jsonify({"message":"Cliente cadastrado com sucesso",
-                    "cliente":{
-                        "id": novo_cliente.id,
-                        "nome": novo_cliente.nome,
-                        "telefone": novo_cliente.telefone},
-                        "id":novo_cliente.id
-                        })
+    dado = load_json(cliente_schema)
+    return jsonify(cliente_service.criar_cliente(dado))
 
 #Listando todos clientes
 @cliente_rt.route('/', methods=['GET'])
 def get_clientes():
-
-    clientes = Cliente.query.all()
-
-    output={"clientes":[]}
-
-    for cliente in clientes:
-        cliente_dado ={
-            "id": cliente.id,
-            "nome": cliente.nome,
-            "telefone": cliente.telefone
-        }
-        output['clientes'].append(cliente_dado)
-
-    return jsonify(output)
-
+    return jsonify(cliente_service.listar_clientes())
 
 #Listando um cliente especifico
 @cliente_rt.route('/<int:id>', methods=['GET'])
 def get_cliente(id):
-
-    cliente = Cliente.query.get(id)
-
-    if not cliente:
-        return jsonify({"message":"Cliente não encontrado"}), 404
-    
-    cliente_dado ={
-            "id": cliente.id,
-            "nome": cliente.nome,
-            "telefone": cliente.telefone
-        }
-    return jsonify(cliente_dado)
-
+    return jsonify(cliente_service.buscar_cliente(id))
 
 #Editando informações do cliente
 @cliente_rt.route('/<int:id>', methods=['PUT'])
 def update_cliente(id):
-    cliente = Cliente.query.get(id)
-
-    if not cliente:
-        return jsonify({"message":"Cliente não encontrado"}), 404
-    
-    dado = request.get_json()
-    cliente.nome = dado['nome']
-    cliente.telefone = dado['telefone']
-    db.session.commit()
-
-    return jsonify({
-        "message": "Cliente atualizado com sucesso",
-        "cliente": {
-            "id": cliente.id,
-            "nome": cliente.nome,
-            "telefone": cliente.telefone
-        }
-    })
+    dado = load_json(cliente_schema, partial=True)
+    return jsonify(cliente_service.atualizar_cliente(id, dado))
 
 #Deletar clientes
 @cliente_rt.route('/<int:id>', methods=['DELETE'])
 def delete_cliente(id):
-    cliente = Cliente.query.get(id)
-
-    if not cliente:
-        return jsonify({"message":"Cliente não encontrado"}), 404
-
-    db.session.delete(cliente)
-    db.session.commit()
-    return jsonify({"message":"Cliente deletado com sucesso"})
+    return jsonify(cliente_service.deletar_cliente(id))
