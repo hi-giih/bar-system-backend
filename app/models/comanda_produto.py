@@ -13,7 +13,6 @@ class ComandaProduto(db.Model):
     produto = db.relationship('Produto')
 
     def to_dict(self):
-        print(f"Produto: {self.produto}")
         return {
             "produto_id": self.produto.id,
             "nome": self.produto.nome,
