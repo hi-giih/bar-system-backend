@@ -12,7 +12,10 @@ class Pagamento(db.Model):
     expiration_date = db.Column(db.DateTime)
 
     #Relacionamentos
-    comanda = db.relationship('Comanda', backref='pagamentos')
+    comanda = db.relationship(
+        'Comanda',
+        backref=db.backref('pagamentos', cascade='all, delete-orphan'),
+    )
 
 
     def to_dict(self):
