@@ -18,6 +18,7 @@ class Comanda(db.Model):
             "id": self.id,
             "data": self.data,
             "cliente_id": self.cliente_id,
+            "cliente_nome": self.cliente.nome if self.cliente else None,
             "fechada": self.fechada,
             "colapsada": self.colapsada,
             "produtos": [cp.to_dict() for cp in self.comanda_produtos],
