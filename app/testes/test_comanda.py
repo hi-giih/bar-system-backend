@@ -5,6 +5,7 @@ def test_criar_comanda_sucesso(client, auth_headers, cliente_id):
     assert r.status_code == 200
     dado = r.get_json()
     assert dado["cliente_id"] == cliente_id
+    assert dado["cliente_nome"] == "Cliente Teste"  # nome definido na fixture cliente_id
     assert dado["produtos"] == []
     assert dado["total"] == 0
     assert dado["fechada"] is False
