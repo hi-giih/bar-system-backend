@@ -1,4 +1,5 @@
 from flask import Flask, jsonify, request
+from flask_cors import CORS
 from flask_jwt_extended import JWTManager, verify_jwt_in_request
 from flask_migrate import Migrate
 from werkzeug.exceptions import HTTPException
@@ -26,6 +27,7 @@ def create_app():
     db.init_app(app)
     migrate.init_app(app, db)
     jwt.init_app(app)
+    CORS(app, origins=app.config["CORS_ALLOWED_ORIGINS"])
 
     app.register_blueprint(auth_rt)
     app.register_blueprint(cliente_rt)
@@ -39,6 +41,10 @@ def create_app():
 
     @app.before_request
     def _exigir_login():
+        # Preflight do CORS nunca envia credenciais; o Flask-CORS
+        # cuida de responder e adicionar os headers necessarios.
+        if request.method == "OPTIONS":
+            return
         if request.endpoint in ENDPOINTS_PUBLICOS:
             return
         verify_jwt_in_request()
