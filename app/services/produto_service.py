@@ -6,11 +6,13 @@ PRODUTO_NAO_ENCONTRADO = "Produto não encontrado"
 
 
 def _serialize(produto: Produto) -> dict:
-    return {"id": produto.id, "nome": produto.nome, "preco": produto.preco}
+    return {"id": produto.id, "nome": produto.nome, "preco": produto.preco, "icone": produto.icone}
 
 
 def criar_produto(dado: dict) -> dict:
-    novo_produto = Produto(nome=dado["nome"], preco=dado["preco"])
+    novo_produto = Produto(
+        nome=dado["nome"], preco=dado["preco"], icone=dado.get("icone", "bebida")
+    )
     db.session.add(novo_produto)
     db.session.commit()
     return {
@@ -36,6 +38,8 @@ def atualizar_produto(produto_id: int, dado: dict) -> dict:
         produto.nome = dado["nome"]
     if "preco" in dado:
         produto.preco = dado["preco"]
+    if "icone" in dado:
+        produto.icone = dado["icone"]
     db.session.commit()
     return {"message": "Produto atualizado com sucesso", "produto": _serialize(produto)}
 

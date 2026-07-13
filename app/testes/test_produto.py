@@ -6,7 +6,33 @@ def test_criar_produto_sucesso(client, auth_headers):
     dado = r.get_json()
     assert dado["produto"]["nome"] == payload["nome"]
     assert dado["produto"]["preco"] == payload["preco"]
+    assert dado["produto"]["icone"] == "bebida"  # default quando nao informado
     assert "id" in dado
+
+
+def test_criar_produto_com_icone_explicito(client, auth_headers):
+    payload = {"nome": "Porção de batata", "preco": 25.0, "icone": "comida"}
+    r = client.post("/produtos/", json=payload, headers=auth_headers)
+    assert r.status_code == 200
+    assert r.get_json()["produto"]["icone"] == "comida"
+
+
+def test_criar_produto_icone_invalido(client, auth_headers):
+    r = client.post(
+        "/produtos/", json={"nome": "Agua", "preco": 1.10, "icone": "sobremesa"}, headers=auth_headers
+    )
+    assert r.status_code == 400
+    assert "icone" in r.get_json()["errors"]
+
+
+def test_atualizar_produto_somente_preco_nao_altera_icone(client, auth_headers, produto_id):
+    r = client.put(f"/produtos/{produto_id}", json={"preco": 99.9}, headers=auth_headers)
+    assert r.status_code == 200
+    assert r.get_json()["produto"]["icone"] == "bebida"  # nao foi resetado
+
+    r = client.put(f"/produtos/{produto_id}", json={"icone": "drink"}, headers=auth_headers)
+    assert r.status_code == 200
+    assert r.get_json()["produto"]["icone"] == "drink"
 
 
 def test_criar_produto_preco_como_string_numerica(client, auth_headers):
