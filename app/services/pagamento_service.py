@@ -14,12 +14,32 @@ from app.utils.db_helpers import get_or_404
 def criar_pagamento(dado: dict) -> dict:
     comanda_id = dado["comanda_id"]
     valor = dado["valor"]
+    forma_pagamento = dado["forma_pagamento"]
 
-    get_or_404(Comanda, comanda_id, "Comanda não encontrada")
+    comanda = get_or_404(Comanda, comanda_id, "Comanda não encontrada")
+
+    if forma_pagamento != "pix":
+        # Cartao/dinheiro sao pagos fora da aplicacao: nao ha QR code nem
+        # confirmacao separada, o pagamento ja nasce confirmado.
+        novo_pagamento = Pagamento(
+            value=valor, comanda_id=comanda_id, forma_pagamento=forma_pagamento, paid=True
+        )
+        db.session.add(novo_pagamento)
+        comanda.colapsada = True
+        saldo_info = calcular_saldo(comanda)
+        db.session.commit()
+        return {
+            "message": "Pagamento registrado com sucesso",
+            "pagamento": novo_pagamento.to_dict(),
+            **saldo_info,
+        }
 
     expiration_date = datetime.now() + timedelta(minutes=30)
     novo_pagamento = Pagamento(
-        value=valor, expiration_date=expiration_date, comanda_id=comanda_id
+        value=valor,
+        expiration_date=expiration_date,
+        comanda_id=comanda_id,
+        forma_pagamento=forma_pagamento,
     )
 
     pix_obj = Pix(
@@ -30,7 +50,7 @@ def criar_pagamento(dado: dict) -> dict:
     dado_pagamento_pix = pix_obj.create_pagamento(valor)
 
     novo_pagamento.bank_payment_id = dado_pagamento_pix["bank_payment_id"]
-    novo_pagamento.qr_code = dado_pagamento_pix["qr_code_path"]
+    novo_pagamento.qr_code = dado_pagamento_pix["qr_code_base64"]
 
     db.session.add(novo_pagamento)
     db.session.commit()
@@ -50,12 +70,13 @@ def confirmar_pagamento(dado: dict) -> dict:
     pagamento.paid = True
     comanda = pagamento.comanda
 
-    saldo_info = calcular_saldo(comanda)
-    if saldo_info["saldo_restante"] > 0:
-        # Pagamento parcial: a partir de agora a comanda exibe uma unica
-        # linha de "saldo restante" em vez dos produtos individuais
-        # (os produtos continuam guardados no banco, nao sao apagados).
-        comanda.colapsada = True
+    # A partir de qualquer pagamento confirmado (parcial ou total), a comanda
+    # exibe uma unica linha de "saldo restante" em vez dos produtos individuais
+    # (os produtos continuam guardados no banco, nao sao apagados). Sem isso,
+    # um pagamento que quita o valor total em uma unica vez nao ficava
+    # refletido no "total" devolvido por GET /comanda/:id.
+    comanda.colapsada = True
 
+    saldo_info = calcular_saldo(comanda)
     db.session.commit()
     return {"message": "Pagamento confirmado com sucesso", **saldo_info}
