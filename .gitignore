@@ -175,3 +175,7 @@ cython_debug/
 
 # Ferramentas locais do Claude Code (config de preview com caminhos da maquina)
 .claude/
+
+# QR codes Pix gerados em runtime (testes e uso local) - nao sao codigo,
+# nao precisam ir pro repositorio, e cada ambiente gera os seus.
+app/static/img/

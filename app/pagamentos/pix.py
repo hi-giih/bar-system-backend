@@ -1,4 +1,3 @@
-import os
 import re
 import uuid
 
@@ -41,15 +40,13 @@ class Pix:
             value=valor,
         )
 
-        base_dir = os.path.dirname(os.path.abspath(__file__))
-        img_dir = os.path.join(base_dir, "..", "static", "img")
-        os.makedirs(img_dir, exist_ok=True)
-
-        file_name = f"qr_code_pagamento_{bank_payment_id}"
-        pix.imageToPath(img_dir, file_name, svg=False)
+        # Gera o QR code direto em memoria (data URI base64), sem gravar
+        # nenhum arquivo em disco - o Render tem sistema de arquivos
+        # efemero, e a imagem so precisa existir no momento da resposta.
+        qr_code_base64 = pix.toBase64()
 
         return {
             "bank_payment_id": bank_payment_id,
-            "qr_code_path": file_name,
+            "qr_code_base64": qr_code_base64,
             "pix_brcode": str(pix),
         }

@@ -2,6 +2,7 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager, verify_jwt_in_request
 from flask_migrate import Migrate
+from sqlalchemy import text
 from werkzeug.exceptions import HTTPException
 from app.banco.database import db
 from app.config import Config
@@ -37,7 +38,16 @@ def create_app():
 
     @app.route('/health', methods=['GET'])
     def health():
-        return jsonify({"status": "ok"})
+        # Consulta o banco de propósito: além de checar a saúde de verdade,
+        # isso mantém o Supabase ativo quando chamado periodicamente por um
+        # serviço externo de ping, evitando a pausa por inatividade do plano free.
+        try:
+            db.session.execute(text('SELECT 1'))
+            return jsonify({"status": "ok", "database": "ok"})
+        except Exception:
+            db.session.rollback()
+            app.logger.exception("Health check: banco indisponível")
+            return jsonify({"status": "ok", "database": "erro"}), 503
 
     @app.before_request
     def _exigir_login():

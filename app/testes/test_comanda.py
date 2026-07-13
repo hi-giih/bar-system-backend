@@ -189,7 +189,11 @@ def test_remover_produto_comanda_fechada_bloqueado(client, auth_headers, comanda
         headers=auth_headers,
     )
     # produto_id fixture custa 10.0, precisa pagar antes de poder fechar
-    client.post("/pagamento/", json={"comanda_id": comanda_id, "valor": 10.0}, headers=auth_headers)
+    client.post(
+        "/pagamento/",
+        json={"comanda_id": comanda_id, "valor": 10.0, "forma_pagamento": "pix"},
+        headers=auth_headers,
+    )
     client.post(
         "/pagamento/confirmacao", json={"comanda_id": comanda_id, "valor": 10.0}, headers=auth_headers
     )

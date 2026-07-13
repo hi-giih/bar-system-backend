@@ -23,14 +23,26 @@ def calcular_saldo(comanda: Comanda) -> dict:
     }
 
 
+def _forma_pagamento_final(comanda: Comanda) -> str | None:
+    """Forma de pagamento do ultimo pagamento confirmado da comanda (usado
+    para exibir na aba de comandas fechadas). None se nada foi pago ainda."""
+    pagos = [p for p in comanda.pagamentos if p.paid]
+    if not pagos:
+        return None
+    return max(pagos, key=lambda p: p.id).forma_pagamento
+
+
 def _serializar_comanda(comanda: Comanda) -> dict:
-    """Serializa a comanda para resposta da API. Se ja houve pagamento
-    parcial (comanda.colapsada), os produtos individuais ficam ocultos
-    e a comanda passa a exibir uma unica linha com o saldo restante.
+    """Serializa a comanda para resposta da API. Enquanto a comanda ainda
+    esta aberta e ja houve pagamento parcial (comanda.colapsada), os produtos
+    individuais ficam ocultos e a comanda exibe uma unica linha com o saldo
+    restante. Uma vez fechada, mostra os produtos reais (so leitura, a tela
+    ja bloqueia edicao de comanda fechada) - nao ha mais saldo a esconder.
     Os produtos originais NUNCA sao apagados do banco (historico)."""
     comanda_dict = comanda.to_dict()
+    comanda_dict["forma_pagamento"] = _forma_pagamento_final(comanda)
 
-    if comanda.colapsada:
+    if comanda.colapsada and not comanda.fechada:
         saldo_restante = calcular_saldo(comanda)["saldo_restante"]
         comanda_dict["produtos"] = [{
             "produto_id": None,

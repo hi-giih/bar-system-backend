@@ -14,6 +14,7 @@ class Comanda(db.Model):
 
 
     def to_dict(self):
+        total = self.calcula_total()
         return{
             "id": self.id,
             "data": self.data,
@@ -22,7 +23,8 @@ class Comanda(db.Model):
             "fechada": self.fechada,
             "colapsada": self.colapsada,
             "produtos": [cp.to_dict() for cp in self.comanda_produtos],
-            "total": self.calcula_total()
+            "total": total,
+            "valor_original": total,
         }
     
     def adicionar_produtos(self, produto: Produto, quantidade: int):
