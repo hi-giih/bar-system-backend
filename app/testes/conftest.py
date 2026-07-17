@@ -13,21 +13,30 @@ ADMIN_SENHA = "senha-teste-123"
 def app():
     """Cria uma app Flask isolada por teste, com banco SQLite em memoria
     (unica conexao via StaticPool) e configuracoes de teste proprias,
-    independentes do .env real."""
-    flask_app = create_app()
-    flask_app.config.update(
-        TESTING=True,
-        SQLALCHEMY_DATABASE_URI="sqlite://",
-        SQLALCHEMY_ENGINE_OPTIONS={
+    independentes do .env real.
+    As overrides precisam ser aplicadas dentro do create_app() (via
+    config_overrides), ANTES do db.init_app(): o Flask-SQLAlchemy vincula
+    a engine nesse momento, entao sobrescrever app.config depois de criar
+    a app nao troca mais o banco de verdade usado."""
+    flask_app = create_app(config_overrides={
+        "SQLALCHEMY_DATABASE_URI": "sqlite://",
+        "TESTING": True,
+        "SQLALCHEMY_ENGINE_OPTIONS": {
             "poolclass": StaticPool,
             "connect_args": {"check_same_thread": False},
         },
-        ADMIN_EMAIL=ADMIN_EMAIL,
-        ADMIN_PASSWORD_HASH=generate_password_hash(ADMIN_SENHA),
-        PIX_KEY="+5511999999999",
-        PIX_RECEIVER_NAME="Bar Teste",
-        PIX_RECEIVER_CITY="Sao Paulo",
-    )
+        "ADMIN_EMAIL": ADMIN_EMAIL,
+        "ADMIN_PASSWORD_HASH": generate_password_hash(ADMIN_SENHA),
+        "PIX_KEY": "+5511999999999",
+        "PIX_RECEIVER_NAME": "Bar Teste",
+        "PIX_RECEIVER_CITY": "Sao Paulo",
+        "SMTP_HOST": "smtp-relay.brevo.com",
+        "SMTP_PORT": 587,
+        "SMTP_LOGIN": "login-teste@smtp-brevo.com",
+        "SMTP_SENHA": "senha-teste",
+        "SMTP_REMETENTE": "login-teste@smtp-brevo.com",
+        "RELATORIO_EMAIL_DESTINATARIO": "destino-teste@exemplo.com",
+    })
 
     with flask_app.app_context():
         db.create_all()

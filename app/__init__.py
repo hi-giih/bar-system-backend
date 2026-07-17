@@ -13,6 +13,7 @@ from app.rotas.clientes_rota import cliente_rt
 from app.rotas.produtos_rota import produto_rt
 from app.rotas.comandas_rota import comanda_rt
 from app.rotas.pagamentos_rota import pagamento_rt
+from app.rotas.relatorios_rota import relatorio_rt
 
 migrate = Migrate()
 jwt = JWTManager()
@@ -21,9 +22,14 @@ jwt = JWTManager()
 # encontradas, que vao virar 404 mais adiante mesmo sem checar autenticacao).
 ENDPOINTS_PUBLICOS = {"auth.login", "health", None}
 
-def create_app():
+def create_app(config_overrides: dict | None = None):
     app = Flask(__name__)
     app.config.from_object(Config)
+    if config_overrides:
+        # Precisa ser aplicado antes do db.init_app: a engine do
+        # Flask-SQLAlchemy e vinculada nesse momento, entao sobrescrever
+        # app.config depois nao troca mais o banco de fato usado.
+        app.config.update(config_overrides)
 
     db.init_app(app)
     migrate.init_app(app, db)
@@ -35,6 +41,7 @@ def create_app():
     app.register_blueprint(produto_rt)
     app.register_blueprint(comanda_rt)
     app.register_blueprint(pagamento_rt)
+    app.register_blueprint(relatorio_rt)
 
     @app.route('/health', methods=['GET'])
     def health():
