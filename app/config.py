@@ -32,6 +32,13 @@ class Config:
     JWT_SECRET_KEY = os.environ.get("JWT_SECRET_KEY", SECRET_KEY)
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=24)
 
+    SMTP_HOST = os.environ.get("SMTP_HOST", "smtp.gmail.com")
+    SMTP_PORT = int(os.environ.get("SMTP_PORT", "587"))
+    SMTP_LOGIN = os.environ.get("SMTP_LOGIN")
+    SMTP_SENHA = os.environ.get("SMTP_SENHA")
+    SMTP_REMETENTE = os.environ.get("SMTP_REMETENTE", SMTP_LOGIN)
+    RELATORIO_EMAIL_DESTINATARIO = os.environ.get("RELATORIO_EMAIL_DESTINATARIO")
+
     CORS_ALLOWED_ORIGINS = [
         origin.strip()
         for origin in os.environ.get(
