@@ -1,12 +1,19 @@
 from unittest.mock import MagicMock, patch
 
 
-def test_enviar_email_sem_autenticacao_bloqueado(client):
+def test_enviar_email_sem_segredo_bloqueado(client):
     r = client.post("/relatorios/comandas/enviar-email")
     assert r.status_code == 401
 
 
-def test_enviar_email_envia_planilha_por_smtp(client, auth_headers, comanda_id, produto_id):
+def test_enviar_email_com_segredo_errado_bloqueado(client):
+    r = client.post(
+        "/relatorios/comandas/enviar-email", headers={"X-Cron-Secret": "segredo-invalido"}
+    )
+    assert r.status_code == 401
+
+
+def test_enviar_email_com_segredo_correto_envia_planilha(client, auth_headers, comanda_id, produto_id):
     client.post(
         f"/comanda/{comanda_id}/produtos",
         json={"produto_id": produto_id, "quantidade": 2},
@@ -17,7 +24,9 @@ def test_enviar_email_envia_planilha_por_smtp(client, auth_headers, comanda_id, 
         servidor = MagicMock()
         smtp_cls.return_value.__enter__.return_value = servidor
 
-        r = client.post("/relatorios/comandas/enviar-email", headers=auth_headers)
+        r = client.post(
+            "/relatorios/comandas/enviar-email", headers={"X-Cron-Secret": "segredo-teste"}
+        )
 
     assert r.status_code == 200
     smtp_cls.assert_called_once_with("smtp-relay.brevo.com", 587)

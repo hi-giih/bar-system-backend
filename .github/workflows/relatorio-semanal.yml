@@ -1,0 +1,23 @@
+name: Relatorio semanal de comandas
+
+on:
+  schedule:
+    # 08:00 no horario de Brasilia (UTC-3), toda segunda-feira.
+    - cron: '0 11 * * 1'
+  workflow_dispatch: {}
+
+jobs:
+  enviar-relatorio:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Chamar rota de envio do relatorio
+        run: |
+          status=$(curl -s -o /dev/null -w "%{http_code}" -X POST \
+            --max-time 90 --retry 2 --retry-delay 15 \
+            -H "X-Cron-Secret: ${{ secrets.RELATORIO_CRON_SECRET }}" \
+            https://bar-system-backend.onrender.com/relatorios/comandas/enviar-email)
+          echo "Status HTTP: $status"
+          if [ "$status" -ne 200 ]; then
+            echo "Falha ao enviar o relatorio (status $status)."
+            exit 1
+          fi

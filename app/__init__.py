@@ -18,9 +18,11 @@ from app.rotas.relatorios_rota import relatorio_rt
 migrate = Migrate()
 jwt = JWTManager()
 
-# Endpoints que nao exigem token (login, health check, e rotas nao
-# encontradas, que vao virar 404 mais adiante mesmo sem checar autenticacao).
-ENDPOINTS_PUBLICOS = {"auth.login", "health", None}
+# Endpoints que nao exigem token JWT (login, health check, rotas nao
+# encontradas, e o disparo automatico do relatorio semanal, que e chamado
+# por um workflow agendado do GitHub Actions em vez de um usuario logado
+# e valida um segredo proprio dentro da propria rota).
+ENDPOINTS_PUBLICOS = {"auth.login", "health", "relatorio.enviar_planilha_por_email", None}
 
 def create_app(config_overrides: dict | None = None):
     app = Flask(__name__)
