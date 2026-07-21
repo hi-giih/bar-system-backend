@@ -36,6 +36,7 @@ def app():
         "SMTP_SENHA": "senha-teste",
         "SMTP_REMETENTE": "login-teste@smtp-brevo.com",
         "RELATORIO_EMAIL_DESTINATARIO": "destino-teste@exemplo.com",
+        "RELATORIO_CRON_SECRET": "segredo-teste",
     })
 
     with flask_app.app_context():

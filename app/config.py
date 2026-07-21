@@ -38,6 +38,7 @@ class Config:
     SMTP_SENHA = os.environ.get("SMTP_SENHA")
     SMTP_REMETENTE = os.environ.get("SMTP_REMETENTE", SMTP_LOGIN)
     RELATORIO_EMAIL_DESTINATARIO = os.environ.get("RELATORIO_EMAIL_DESTINATARIO")
+    RELATORIO_CRON_SECRET = os.environ.get("RELATORIO_CRON_SECRET")
 
     CORS_ALLOWED_ORIGINS = [
         origin.strip()
