@@ -20,21 +20,22 @@ def test_enviar_email_com_segredo_correto_envia_planilha(client, auth_headers, c
         headers=auth_headers,
     )
 
-    with patch("app.services.email_service.smtplib.SMTP") as smtp_cls:
-        servidor = MagicMock()
-        smtp_cls.return_value.__enter__.return_value = servidor
+    with patch("app.services.email_service.requests.post") as post_mock:
+        post_mock.return_value = MagicMock(status_code=200)
 
         r = client.post(
             "/relatorios/comandas/enviar-email", headers={"X-Cron-Secret": "segredo-teste"}
         )
 
     assert r.status_code == 200
-    smtp_cls.assert_called_once_with("smtp-relay.brevo.com", 587)
-    servidor.starttls.assert_called_once()
-    servidor.login.assert_called_once_with("login-teste@smtp-brevo.com", "senha-teste")
 
-    servidor.send_message.assert_called_once()
-    mensagem = servidor.send_message.call_args[0][0]
-    assert mensagem["From"] == "login-teste@smtp-brevo.com"
-    assert mensagem["To"] == "destino-teste@exemplo.com"
-    assert mensagem.get_content_type() == "multipart/mixed"
+    post_mock.assert_called_once()
+    url, kwargs = post_mock.call_args[0][0], post_mock.call_args[1]
+    assert url == "https://api.resend.com/emails"
+    assert kwargs["headers"]["Authorization"] == "Bearer re_teste_123"
+
+    corpo = kwargs["json"]
+    assert corpo["from"] == "onboarding@resend.dev"
+    assert corpo["to"] == ["destino-teste@exemplo.com"]
+    assert len(corpo["attachments"]) == 1
+    assert corpo["attachments"][0]["filename"].endswith(".xlsx")
