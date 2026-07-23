@@ -1,0 +1,22 @@
+name: Keep-alive do backend
+
+on:
+  schedule:
+    # A cada 10 minutos: o Render (plano free) hiberna depois de ~15min
+    # sem requisicoes, entao um ping mais frequente que isso evita a pausa.
+    - cron: '*/10 * * * *'
+  workflow_dispatch: {}
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Chamar /health
+        run: |
+          status=$(curl -s -o /dev/null -w "%{http_code}" --max-time 60 \
+            https://bar-system-backend.onrender.com/health)
+          echo "Status HTTP: $status"
+          if [ "$status" -ne 200 ]; then
+            echo "Backend nao respondeu ok (status $status)."
+            exit 1
+          fi
