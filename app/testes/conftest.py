@@ -30,11 +30,8 @@ def app():
         "PIX_KEY": "+5511999999999",
         "PIX_RECEIVER_NAME": "Bar Teste",
         "PIX_RECEIVER_CITY": "Sao Paulo",
-        "SMTP_HOST": "smtp-relay.brevo.com",
-        "SMTP_PORT": 587,
-        "SMTP_LOGIN": "login-teste@smtp-brevo.com",
-        "SMTP_SENHA": "senha-teste",
-        "SMTP_REMETENTE": "login-teste@smtp-brevo.com",
+        "RESEND_API_KEY": "re_teste_123",
+        "RESEND_REMETENTE": "onboarding@resend.dev",
         "RELATORIO_EMAIL_DESTINATARIO": "destino-teste@exemplo.com",
         "RELATORIO_CRON_SECRET": "segredo-teste",
     })

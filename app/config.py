@@ -32,11 +32,11 @@ class Config:
     JWT_SECRET_KEY = os.environ.get("JWT_SECRET_KEY", SECRET_KEY)
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=24)
 
-    SMTP_HOST = os.environ.get("SMTP_HOST", "smtp.gmail.com")
-    SMTP_PORT = int(os.environ.get("SMTP_PORT", "587"))
-    SMTP_LOGIN = os.environ.get("SMTP_LOGIN")
-    SMTP_SENHA = os.environ.get("SMTP_SENHA")
-    SMTP_REMETENTE = os.environ.get("SMTP_REMETENTE", SMTP_LOGIN)
+    # Envio de email via API HTTP (Resend) em vez de SMTP: o Render (e boa
+    # parte dos provedores PaaS) bloqueia conexoes SMTP de saida, entao uma
+    # API sobre HTTPS e a unica forma confiavel de enviar em producao.
+    RESEND_API_KEY = os.environ.get("RESEND_API_KEY")
+    RESEND_REMETENTE = os.environ.get("RESEND_REMETENTE", "onboarding@resend.dev")
     RELATORIO_EMAIL_DESTINATARIO = os.environ.get("RELATORIO_EMAIL_DESTINATARIO")
     RELATORIO_CRON_SECRET = os.environ.get("RELATORIO_CRON_SECRET")
 
